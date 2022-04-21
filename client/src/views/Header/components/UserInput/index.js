@@ -86,7 +86,6 @@ export default class UserInput extends Component {
       this.props.setAppState("searchQueryBlankError", true);
     else {
       //await this.props.reset();
-
       await this.props.setAppState("previousSearchQuery", this.state.search);
       this.updateRecentSearches(this.state.search);
 
@@ -113,6 +112,7 @@ export default class UserInput extends Component {
       .then(
         async (response) => {
           await this.setState({ searchResults: response.data.coins });
+
           //console.log("searchResults", this.state.searchResults);
         },
         (error) => {
@@ -177,7 +177,6 @@ export default class UserInput extends Component {
             }
             // defaultValue={this.state.search}
             spellCheck="false"
-            //onChange={this.handleChange}
             onChange={(e) => this.setSearchTerm(e.target.value)}
             onFocus={() =>
               this.setState({ searchFocused: !this.state.searchFocused })

@@ -47,7 +47,7 @@ export default class Home extends Component {
 
   render() {
     //console.log("predictions", this.props.state.predictions);
-    const predictions = this.props.state.predictions;
+    //const predictions = this.props.state.predictions;
 
     return (
       <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>

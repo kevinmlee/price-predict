@@ -184,6 +184,8 @@ export default class App extends Component {
   };
 
   getPredictions = async (ticker) => {
+    await this.setState({ loadingBackdrop: true });
+
     return await axios
       .put("/brain/get/predictions", {
         ticker: ticker,
@@ -211,7 +213,10 @@ export default class App extends Component {
           };
 
           //await this.setState({ chartData });
-          await this.setState({ primaryChartData: chartData });
+          await this.setState({
+            primaryChartData: chartData,
+            loadingBackdrop: false,
+          });
         },
         (error) => {
           console.log(error);
