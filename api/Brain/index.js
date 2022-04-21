@@ -17,9 +17,24 @@ const net1 = new brain.recurrent.RNNTimeStep();
 const net2 = new brain.recurrent.LSTMTimeStep();
 const net3 = new brain.recurrent.GRUTimeStep();
 
-predict = async (seedData) => {
+predict = async (seedData, ticker) => {
   const normalizedTrainingData = seedData.map(normalize);
-  train(normalizedTrainingData);
+  //train(normalizedTrainingData);
+
+  console.log("\n - Looking for trained network...");
+  if (fs.existsSync(ticker + "-net1.json")) {
+    console.log("- Reading trained network from file");
+    const trainedNet1 = JSON.parse(fs.readFileSync(ticker + "-net1.json"));
+    const trainedNet2 = JSON.parse(fs.readFileSync(ticker + "-net2.json"));
+    const trainedNet3 = JSON.parse(fs.readFileSync(ticker + "-net3.json"));
+    net1.fromJSON(trainedNet1);
+    net2.fromJSON(trainedNet2);
+    net3.fromJSON(trainedNet3);
+  } else {
+    console.log("- No trained network found. Training...");
+    train(normalizedTrainingData, ticker);
+    console.log("- Neural network ready.");
+  }
 
   const output1 = net1.forecast(normalizedTrainingData, 10);
   const output2 = net2.forecast(normalizedTrainingData, 10);
@@ -40,7 +55,7 @@ predict = async (seedData) => {
   return [output1, output2, output3];
 };
 
-train = (normalizedTrainingData) => {
+train = (normalizedTrainingData, ticker) => {
   const config = {
     iterations: 6000,
     learningRate: 0.005,
@@ -53,35 +68,14 @@ train = (normalizedTrainingData) => {
   net2.train([normalizedTrainingData], config);
   net3.train([normalizedTrainingData], config);
   console.log("\n - Training complete\n");
+
+  // save the trained network
+  fs.writeFileSync(ticker + "-net1.json", JSON.stringify(net1.toJSON()));
+  fs.writeFileSync(ticker + "-net2.json", JSON.stringify(net2.toJSON()));
+  fs.writeFileSync(ticker + "-net3.json", JSON.stringify(net3.toJSON()));
 };
 
 module.exports = {
-  /*
-  search: async function (req, res, next) {
-    const { searchQuery } = req.body;
-
-    const params = {
-      query: searchQuery,
-      //"-is": "retweet",
-      //"-filter": "replies",
-      expansions:
-        "in_reply_to_user_id,referenced_tweets.id,attachments.media_keys,author_id",
-      max_results: 100,
-      "tweet.fields": "public_metrics,created_at",
-      "media.fields": "preview_image_url,url",
-      "user.fields": "profile_image_url",
-    };
-
-    try {
-      return res.json({
-        tweets: await client.get("tweets/search/recent", params),
-      });
-    } catch (e) {
-      console.log(e);
-      return res.json({ error: e, twitterResults: [] });
-    }
-  },
-  */
   getPredictions: async function (req, res, next) {
     //const { ticker } = req.body;
     const ticker = "terra-luna";

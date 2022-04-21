@@ -4,6 +4,8 @@ import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import dayjs from "dayjs";
 
+import PrimaryChart from "../PrimaryChart";
+
 import { Box } from "@mui/material";
 
 export default class Home extends Component {
@@ -17,7 +19,7 @@ export default class Home extends Component {
       popular: true,
     };
 
-    this.wrapperRef = React.createRef();
+    //this.wrapperRef = React.createRef();
     //this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
@@ -58,18 +60,21 @@ export default class Home extends Component {
         }
       );
   };
+
   render() {
-    console.log("predictions", this.props.state.predictions);
+    //console.log("predictions", this.props.state.predictions);
     const predictions = this.props.state.predictions;
 
     return (
       <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
         <h2>price predict home</h2>
 
+        <PrimaryChart state={this.props.state} />
+
         {predictions.hasOwnProperty("seed") && (
           <Box>
-            {predictions.seed.map((seed) => (
-              <div>
+            {predictions.seed.map((seed, index) => (
+              <div key={"seed-" + index}>
                 {dayjs(seed[0]).format("DD/MM/YYYY")} @ {seed[1].toFixed(2)}
               </div>
             ))}
