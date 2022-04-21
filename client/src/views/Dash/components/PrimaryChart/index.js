@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import dayjs from "dayjs";
-import { Box, touchRippleClasses, Typography } from "@mui/material";
+import axios from "axios";
+import { Box, Typography } from "@mui/material";
 
 //import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 
@@ -20,8 +21,11 @@ export default class PrimaryChart extends Component {
   }
 
   componentDidMount = () => {
-    const predictions = this.props.state.predictions;
-    if (predictions.hasOwnProperty("seed")) this.buildChart(predictions.seed);
+    if (!this.props.state.predictions.hasOwnProperty("seed"))
+      this.getPredictions();
+
+    if (this.props.state.searchQuery)
+      this.getPredictions(this.props.state.searchQuery);
   };
 
   componentWillUnmount = () => {};
@@ -52,12 +56,12 @@ export default class PrimaryChart extends Component {
       >
         <div className="card">
           <Typography variant="h5" sx={{ paddingBottom: 2 }}>
-            TICKER
+            {this.props.state.selectedCoinName}
           </Typography>
 
           <Line
             id="primaryChart"
-            data={this.state.chartData}
+            data={this.props.state.primaryChartData}
             options={options}
           />
         </div>
@@ -65,55 +69,10 @@ export default class PrimaryChart extends Component {
     );
   };
 
-  buildChart = async (seed) => {
-    let borderColor = "";
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches)
-      borderColor = "rgba(255, 255, 255, 1)";
-    else if (window.matchMedia("(prefers-color-scheme: light)").matches)
-      borderColor = "rgba(0, 0, 0, 1)";
-
-    let chartData = {
-      labels: await this.generateLabels(seed),
-      datasets: [
-        {
-          label: "Price",
-          data: await this.generateData(seed),
-          //backgroundColor: "rgba(255, 255, 255, 1)",
-          borderColor: borderColor,
-          //backgroundColor: gradient,
-          //pointBackgroundColor: "white",
-          //borderWidth: 1,
-        },
-      ],
-    };
-
-    await this.setState({ chartData });
-  };
-
-  generateLabels = (data) => {
-    let labels = [];
-
-    data.forEach((item) => {
-      labels.push(dayjs(item[0]).format("DD/MM/YYYY"));
-    });
-
-    return labels;
-  };
-
-  generateData = (data) => {
-    let values = [];
-
-    data.forEach((item) => {
-      values.push(item[1]);
-    });
-
-    return values;
-  };
-
   render() {
     return (
       <Box id="mainChart" sx={{ paddingTop: 4, paddingBottom: 4 }}>
-        {"datasets" in this.state.chartData && this.primaryChart()}
+        {"datasets" in this.props.state.primaryChartData && this.primaryChart()}
       </Box>
     );
   }

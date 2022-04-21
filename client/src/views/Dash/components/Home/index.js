@@ -25,8 +25,10 @@ export default class Home extends Component {
 
   componentDidMount = async () => {
     //document.addEventListener("mousedown", this.handleClickOutside);
+    /*
     if (!this.props.state.predictions.hasOwnProperty("seed"))
       this.getPredictions();
+      */
   };
 
   componentWillUnmount = () => {
@@ -42,25 +44,6 @@ export default class Home extends Component {
     await this.setState({ [state]: !this.state[state] });
   };
 
-  getPredictions = async (ticker) => {
-    console.log(
-      "getting predictions. please wait. this could take a few minutes"
-    );
-
-    return await axios
-      .get("/brain/get/predictions", {
-        ticker: "terra-luna",
-      })
-      .then(
-        (response) => {
-          this.props.setAppState("predictions", response.data);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-  };
-
   render() {
     //console.log("predictions", this.props.state.predictions);
     const predictions = this.props.state.predictions;
@@ -69,9 +52,12 @@ export default class Home extends Component {
       <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
         <h2>price predict home</h2>
 
-        <PrimaryChart state={this.props.state} />
+        <PrimaryChart
+          setAppState={this.props.setAppState}
+          state={this.props.state}
+        />
 
-        {predictions.hasOwnProperty("seed") && (
+        {/*{predictions.hasOwnProperty("seed") && (
           <Box>
             {predictions.seed.map((seed, index) => (
               <div key={"seed-" + index}>
@@ -80,6 +66,7 @@ export default class Home extends Component {
             ))}
           </Box>
         )}
+            */}
       </Box>
     );
   }

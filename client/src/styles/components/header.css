@@ -134,3 +134,85 @@ header .search input {
 
 @media screen and (min-width: 769px) {
 }
+
+/*
+* Coin Search Results
+*/
+#searchResults {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
+    0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
+  max-height: 300px;
+}
+#searchResults .top {
+  justify-content: space-between;
+  padding: 20px;
+}
+#searchResults .results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  height: 240px;
+}
+#searchResults .recent-item {
+  transition: ease-in-out all 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#searchResults .query {
+  width: 100%;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+#searchResults .query img {
+  margin-right: 15px;
+}
+#searchResults .clear {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 14px;
+}
+#searchResults .recent-item .MuiIconButton-root {
+  margin-right: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  #searchResults {
+    background-color: #131516;
+  }
+  #searchResults .recent-item:hover {
+    background-color: rgb(30, 32, 33);
+  }
+  #searchResults .recent-item .MuiSvgIcon-root {
+    fill: rgb(210, 193, 156);
+  }
+  #searchResults .recent-item .MuiIconButton-root:hover,
+  #searchResults .clear:hover {
+    background-color: rgba(210, 193, 156, 0.1);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #searchResults {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  #searchResults .recent-item:hover {
+    background-color: #faf8f4;
+  }
+  #searchResults .recent-item .MuiSvgIcon-root {
+    fill: #000000;
+  }
+  #searchResults .recent-item .MuiIconButton-root:hover,
+  #searchResults .clear:hover {
+    background-color: rgba(210, 193, 156, 0.1);
+    color: #000000;
+  }
+}

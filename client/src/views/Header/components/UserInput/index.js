@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 
+import { debounce } from "lodash";
+
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -18,6 +20,8 @@ export default class UserInput extends Component {
     this.state = {
       search: "",
       searches: [],
+
+      searchResults: [],
     };
 
     this.wrapperRef = React.createRef();
@@ -37,6 +41,12 @@ export default class UserInput extends Component {
     document.removeEventListener("mousedown", this.handleClickOutside);
   };
 
+  setSearchTerm = debounce((searchTerm) => {
+    //console.log("setSearchTerm", searchTerm);
+    this.setState({ search: searchTerm, searchResults: [] });
+    if (searchTerm.length > 0) this.search(searchTerm);
+  }, 500);
+
   handleClickOutside = (event) => {
     if (this.wrapperRef && !this.wrapperRef.current.contains(event.target))
       this.setState({ searchFocused: false });
@@ -46,10 +56,12 @@ export default class UserInput extends Component {
     const NAME = event.target.name;
     const VALUE = event.target.value;
 
-    if (NAME === "search" && VALUE !== "")
+    if (NAME === "search" && VALUE !== "") {
+      this.search(VALUE);
       await this.props.setAppState("searchQueryBlankError", false);
+    }
 
-    await this.setState({ [NAME]: VALUE });
+    //await this.setState({ [NAME]: VALUE });
   };
 
   oneWord = (string) => {
@@ -73,7 +85,8 @@ export default class UserInput extends Component {
     if (this.state.search === "")
       this.props.setAppState("searchQueryBlankError", true);
     else {
-      await this.props.reset();
+      //await this.props.reset();
+
       await this.props.setAppState("previousSearchQuery", this.state.search);
       this.updateRecentSearches(this.state.search);
 
@@ -90,6 +103,22 @@ export default class UserInput extends Component {
     }
 
     await this.setState({ search: "", searchFocused: false });
+  };
+
+  search = async (query) => {
+    return await axios
+      .put("/brain/search", {
+        searchQuery: query,
+      })
+      .then(
+        async (response) => {
+          await this.setState({ searchResults: response.data.coins });
+          //console.log("searchResults", this.state.searchResults);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   };
 
   updateRecentSearches = (searchQuery) => {
@@ -135,30 +164,62 @@ export default class UserInput extends Component {
     return (
       <div className="search-input">
         <Box sx={{}}>
-          <form onSubmit={this.search}>
-            <TextField
-              //label="Search query"
-              variant="filled"
-              name="search"
-              value={this.state.search}
-              size="small"
-              placeholder={
-                this.props.state.previousSearchQuery
-                  ? this.props.state.previousSearchQuery
-                  : "Search for a person or topic"
-              }
-              // defaultValue={this.state.search}
-              spellCheck="false"
-              onChange={this.handleChange}
-              onFocus={() =>
-                this.setState({ searchFocused: !this.state.searchFocused })
-              }
-              fullWidth={true}
-              ref={this.wrapperRef}
-            />
-          </form>
+          <TextField
+            //label="Search query"
+            variant="filled"
+            name="search"
+            //value={this.state.search}
+            size="small"
+            placeholder={
+              this.props.state.previousSearchQuery
+                ? this.props.state.previousSearchQuery
+                : "Search for a person or topic"
+            }
+            // defaultValue={this.state.search}
+            spellCheck="false"
+            //onChange={this.handleChange}
+            onChange={(e) => this.setSearchTerm(e.target.value)}
+            onFocus={() =>
+              this.setState({ searchFocused: !this.state.searchFocused })
+            }
+            fullWidth={true}
+            ref={this.wrapperRef}
+          />
         </Box>
 
+        {this.state.searchResults.length > 0 && this.state.search && (
+          <Box id="searchResults" ref={this.wrapperRef}>
+            <div className="top d-flex">
+              <Typography variant="h6">Results</Typography>
+            </div>
+
+            <ul className="results">
+              {this.state.searchResults.map((coin, index) => {
+                return (
+                  <li className="recent-item" key={coin.id}>
+                    <span
+                      className="query"
+                      data-id={coin.id}
+                      onClick={() => {
+                        this.props.getPredictions(coin.id);
+                        this.setState({ search: "" });
+                        this.props.setAppState(
+                          "selectedCoinName",
+                          coin.name + " (" + coin.symbol + ")"
+                        );
+                      }}
+                    >
+                      <img src={coin.thumb} alt={coin.name} />
+                      {coin.name + " (" + coin.symbol + ")"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </Box>
+        )}
+
+        {/*
         {this.state.searchFocused && this.state.searches.length > 0 && (
           <Box id="recentSearches" ref={this.wrapperRef}>
             <div className="top d-flex">
@@ -194,7 +255,7 @@ export default class UserInput extends Component {
               })}
             </ul>
           </Box>
-        )}
+            )}*/}
       </div>
     );
   }

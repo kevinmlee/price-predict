@@ -43,6 +43,7 @@ export default class Header extends Component {
                 state={this.props.state}
                 setAppState={this.props.setAppState}
                 reset={this.props.reset}
+                getPredictions={this.props.getPredictions}
                 updateLocalStorage={this.props.updateLocalStorage}
               />
             </Box>

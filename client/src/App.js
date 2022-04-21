@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import dayjs from "dayjs";
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Switch,
@@ -36,6 +38,7 @@ export default class App extends Component {
       backToTop: false,
 
       predictions: {},
+      primaryChartData: {},
 
       searchQuery: "",
       previousSearchQuery: "",
@@ -180,6 +183,62 @@ export default class App extends Component {
     );
   };
 
+  getPredictions = async (ticker) => {
+    return await axios
+      .put("/brain/get/predictions", {
+        ticker: ticker,
+      })
+      .then(
+        async (response) => {
+          const seed = response.data.seed;
+          this.setState({ predictions: response.data });
+
+          let borderColor = "";
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+            borderColor = "rgba(255, 255, 255, 1)";
+          else if (window.matchMedia("(prefers-color-scheme: light)").matches)
+            borderColor = "rgba(0, 0, 0, 1)";
+
+          let chartData = {
+            labels: await this.generateLabels(seed),
+            datasets: [
+              {
+                label: "Price",
+                data: await this.generateData(seed),
+                borderColor: borderColor,
+              },
+            ],
+          };
+
+          //await this.setState({ chartData });
+          await this.setState({ primaryChartData: chartData });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  generateLabels = (data) => {
+    let labels = [];
+
+    data.forEach((item) => {
+      labels.push(dayjs(item[0]).format("DD/MM/YYYY"));
+    });
+
+    return labels;
+  };
+
+  generateData = (data) => {
+    let values = [];
+
+    data.forEach((item) => {
+      values.push(item[1]);
+    });
+
+    return values;
+  };
+
   render() {
     return (
       <Box>
@@ -187,6 +246,7 @@ export default class App extends Component {
           state={this.state}
           setAppState={this.setAppState}
           updateLocalStorage={this.updateLocalStorage}
+          getPredictions={this.getPredictions}
           toggle={this.toggle}
           reset={this.reset}
         />

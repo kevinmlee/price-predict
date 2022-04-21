@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const https = require("https");
 const brain = require("brain.js");
 const axios = require("axios");
 const dayjs = require("dayjs");
@@ -76,9 +76,22 @@ train = (normalizedTrainingData, ticker) => {
 };
 
 module.exports = {
+  search: async function (req, res, next) {
+    const { searchQuery } = req.body;
+    const url = "https://api.coingecko.com/api/v3/search?query=" + searchQuery;
+
+    let request = https.get(url, (response) => {
+      let data = "";
+
+      response.on("data", (stream) => (data += stream));
+      response.on("end", () => res.json(JSON.parse(data)));
+    });
+
+    request.on("error", (e) => res.json(e));
+  },
   getPredictions: async function (req, res, next) {
-    //const { ticker } = req.body;
-    const ticker = "terra-luna";
+    const { ticker } = req.body;
+
     let predictions = [];
     let seedData = [];
     let priceData = [];
@@ -91,8 +104,6 @@ module.exports = {
       "&to=" +
       dateNow;
 
-    // set timeout to 5 minutes
-    // req.setTimeout(300000, function () {});
     req.setTimeout(0); // no timeout
 
     await axios.get(coinGeckoURL, {}).then(
@@ -101,7 +112,7 @@ module.exports = {
         priceData = data;
 
         for (const price of data) seedData.push(price[1]);
-        predictions = await predict(seedData);
+        predictions = await predict(seedData, ticker);
 
         return;
       },

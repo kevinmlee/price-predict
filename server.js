@@ -72,6 +72,7 @@ if (process.env.NODE_ENV === "production") {
 /////////////////////////////////////////////
 
 app.all("/brain/get/predictions", BRAIN.getPredictions);
+app.all("/brain/search", BRAIN.search);
 
 /////////////////////////////////////////////
 // Database API Routes
