@@ -1,0 +1,8 @@
+#predictions .card h6 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+#predictions .card h6 svg {
+  margin-left: 10px;
+}
