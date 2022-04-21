@@ -21,11 +21,10 @@ export default class PrimaryChart extends Component {
   }
 
   componentDidMount = () => {
-    if (!this.props.state.predictions.hasOwnProperty("seed"))
-      this.getPredictions();
-
-    if (this.props.state.searchQuery)
-      this.getPredictions(this.props.state.searchQuery);
+    /*if (!this.props.state.predictions.hasOwnProperty("seed"))
+      this.getPredictions();*/
+    /*if (this.props.state.searchQuery)
+      this.getPredictions(this.props.state.searchQuery);*/
   };
 
   componentWillUnmount = () => {};
@@ -71,7 +70,7 @@ export default class PrimaryChart extends Component {
 
   render() {
     return (
-      <Box id="mainChart" sx={{ paddingTop: 4, paddingBottom: 4 }}>
+      <Box id="mainChart" sx={{ paddingBottom: 4 }}>
         {"datasets" in this.props.state.primaryChartData && this.primaryChart()}
       </Box>
     );

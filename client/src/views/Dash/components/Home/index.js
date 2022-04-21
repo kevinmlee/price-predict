@@ -5,6 +5,7 @@ import { Line } from "react-chartjs-2";
 import dayjs from "dayjs";
 
 import PrimaryChart from "../PrimaryChart";
+import Predictions from "../Predictions";
 
 import { Box } from "@mui/material";
 
@@ -50,23 +51,12 @@ export default class Home extends Component {
 
     return (
       <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
-        <h2>price predict home</h2>
-
         <PrimaryChart
           setAppState={this.props.setAppState}
           state={this.props.state}
         />
 
-        {/*{predictions.hasOwnProperty("seed") && (
-          <Box>
-            {predictions.seed.map((seed, index) => (
-              <div key={"seed-" + index}>
-                {dayjs(seed[0]).format("DD/MM/YYYY")} @ {seed[1].toFixed(2)}
-              </div>
-            ))}
-          </Box>
-        )}
-            */}
+        <Predictions state={this.props.state} />
       </Box>
     );
   }
