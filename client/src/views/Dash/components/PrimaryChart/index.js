@@ -49,10 +49,7 @@ export default class PrimaryChart extends Component {
     };
 
     return (
-      <Box
-        className="interest-over-time"
-        sx={{ paddingTop: 4, paddingBottom: 2 }}
-      >
+      <Box className="trend-over-time" sx={{ paddingBottom: 2 }}>
         <div className="card">
           <Typography variant="h5" sx={{ paddingBottom: 2 }}>
             {this.props.state.selectedCoinName}
