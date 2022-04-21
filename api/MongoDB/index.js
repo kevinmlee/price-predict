@@ -192,9 +192,6 @@ module.exports = {
         auth: {
           //user: process.env.SENDGRID_USERNAME,
           //pass: process.env.SENDGRID_PASSWORD
-          user: "no-reply@schemahelper.com",
-          //pass: "%2AaKY<D",
-          pass: "Salted123!",
         },
       });
       */
