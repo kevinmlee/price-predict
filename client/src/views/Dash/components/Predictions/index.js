@@ -54,7 +54,7 @@ export default class Predictions extends Component {
 
                 {Object.keys(predictionOne).map((value) => {
                   return (
-                    <div value={value}>
+                    <div className="forecast-item" value={value}>
                       {(predictionOne[value] * 10).toFixed(2)}
                     </div>
                   );
@@ -78,7 +78,7 @@ export default class Predictions extends Component {
 
                 {Object.keys(predictionTwo).map((value) => {
                   return (
-                    <div value={value}>
+                    <div className="forecast-item" value={value}>
                       {(predictionTwo[value] * 10).toFixed(2)}
                     </div>
                   );
@@ -102,7 +102,10 @@ export default class Predictions extends Component {
 
                 {Object.keys(predictionThree).map((value) => {
                   return (
-                    <div value={predictionThree[value]}>
+                    <div
+                      className="forecast-item"
+                      value={predictionThree[value]}
+                    >
                       {(predictionThree[value] * 10).toFixed(2)}
                     </div>
                   );

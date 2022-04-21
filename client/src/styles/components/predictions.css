@@ -6,3 +6,7 @@
 #predictions .card h6 svg {
   margin-left: 10px;
 }
+#predictions .forecast-item {
+  margin-top: 10px;
+  font-size: 18px;
+}
